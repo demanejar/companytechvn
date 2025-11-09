@@ -8,7 +8,7 @@ const translations = {
   en: {
     title: "Company Directory",
     searchPlaceholder: "🔍 Search by name or focus area...",
-    footer: 'Made with ❤️ by <a href="https://github.com/yourusername" target="_blank">yourusername</a>',
+    footer: 'Made with ❤️ by <a href="https://github.com/demanejar" target="_blank">Demanejar</a>',
     fields: {
       employees: "Employees",
       hourlyRate: "Hourly rate",
@@ -23,7 +23,7 @@ const translations = {
   vi: {
     title: "Danh sách công ty",
     searchPlaceholder: "🔍 Tìm kiếm theo tên hoặc lĩnh vực...",
-    footer: 'Tạo với ❤️ bởi <a href="https://github.com/yourusername" target="_blank">yourusername</a>',
+    footer: 'Tạo với ❤️ bởi <a href="https://github.com/demanejar" target="_blank">Demanejar</a>',
     fields: {
       employees: "Nhân viên",
       hourlyRate: "Giá/giờ",

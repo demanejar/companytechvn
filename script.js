@@ -9,6 +9,7 @@ const translations = {
     title: "Company Directory",
     searchPlaceholder: "🔍 Search by name or focus area...",
     footer: 'Made with ❤️ by <a href="https://github.com/demanejar" target="_blank">Demanejar</a>',
+    loading: "Loading...",
     fields: {
       employees: "Employees",
       hourlyRate: "Hourly rate",
@@ -24,6 +25,7 @@ const translations = {
     title: "Danh sách công ty",
     searchPlaceholder: "🔍 Tìm kiếm theo tên hoặc lĩnh vực...",
     footer: 'Tạo với ❤️ bởi <a href="https://github.com/demanejar" target="_blank">Demanejar</a>',
+    loading: "Đang tải...",
     fields: {
       employees: "Nhân viên",
       hourlyRate: "Giá/giờ",
@@ -37,8 +39,24 @@ const translations = {
   }
 };
 
+// ------------------- LOADING UTILITIES -------------------
+function showLoading() {
+  const loadingEl = document.getElementById('loading');
+  const loadingText = loadingEl.querySelector('.loading-text');
+  const t = translations[currentLang];
+  loadingText.textContent = t.loading;
+  loadingEl.style.display = 'flex';
+  document.getElementById('company-list').style.display = 'none';
+}
+
+function hideLoading() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('company-list').style.display = 'grid';
+}
+
 // ------------------- FETCH DATA -------------------
 async function fetchCompanies() {
+  showLoading();
   try {
     const res = await fetch(API_URL);
     allData = await res.json();
@@ -47,6 +65,8 @@ async function fetchCompanies() {
   } catch (err) {
     document.getElementById('company-list').innerHTML =
       `<p style="color:red;text-align:center;">❌ Error loading data: ${err}</p>`;
+  } finally {
+    hideLoading();
   }
 }
 

@@ -39,6 +39,13 @@ const translations = {
   }
 };
 
+// ------------------- UTILITY FUNCTIONS -------------------
+function truncateText(text, maxLength = 150) {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + '...';
+}
+
 // ------------------- LOADING UTILITIES -------------------
 function showLoading() {
   const loadingEl = document.getElementById('loading');
@@ -83,7 +90,7 @@ function renderCompanies(data) {
     return;
   }
 
-  data.forEach(c => {
+  data.forEach((c, index) => {
     const div = document.createElement('div');
     div.className = 'card';
     div.innerHTML = `
@@ -93,9 +100,12 @@ function renderCompanies(data) {
       <p><strong>${t.fields.founded}:</strong> ${c.FoundedYear || 'N/A'}</p>
       <p><strong>${t.fields.location}:</strong> ${c.Location || 'N/A'}</p>
       <p><strong>${t.fields.focus}:</strong> ${c.FocusAreas || 'N/A'}</p>
-      <p>${c.Description || ''}</p>
-      ${c.Website ? `<a href="${c.Website}" target="_blank">${t.fields.website}</a>` : ''}
+      ${c.Description ? `<p class="description">${c.Description}</p>` : ''}
+      <div class="card-footer">
+        ${c.Website ? `<a href="${c.Website}" target="_blank" onclick="event.stopPropagation();">${t.fields.website}</a>` : '<span style="opacity: 0.5;">No website</span>'}
+      </div>
     `;
+    div.addEventListener('click', () => showModal(c));
     container.appendChild(div);
   });
 }
@@ -137,6 +147,73 @@ function setupLanguage() {
   applyLang();
 }
 
+// ------------------- MODAL POPUP -------------------
+function showModal(company) {
+  const t = translations[currentLang];
+  const modal = document.getElementById('modal');
+  const modalBody = document.getElementById('modal-body');
+  
+  modalBody.innerHTML = `
+    <h2>${company.Name || '(No name)'}</h2>
+    <div class="modal-field">
+      <strong>${t.fields.employees}:</strong> ${company.Employees || 'N/A'}
+    </div>
+    <div class="modal-field">
+      <strong>${t.fields.hourlyRate}:</strong> ${company.HourlyRate ? company.HourlyRate : 'N/A'}
+    </div>
+    <div class="modal-field">
+      <strong>${t.fields.founded}:</strong> ${company.FoundedYear || 'N/A'}
+    </div>
+    <div class="modal-field">
+      <strong>${t.fields.location}:</strong> ${company.Location || 'N/A'}
+    </div>
+    <div class="modal-field">
+      <strong>${t.fields.focus}:</strong> ${company.FocusAreas || 'N/A'}
+    </div>
+    ${company.Description ? `
+      <div class="modal-description">
+        <strong>Description:</strong>
+        <p>${company.Description}</p>
+      </div>
+    ` : ''}
+    ${company.Website ? `
+      <div class="modal-website">
+        <a href="${company.Website}" target="_blank">${t.fields.website}</a>
+      </div>
+    ` : ''}
+  `;
+  
+  modal.style.display = 'block';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+// Setup modal close handlers
+function setupModal() {
+  const modal = document.getElementById('modal');
+  const closeBtn = document.querySelector('.close');
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
+  }
+  
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && modal.style.display === 'block') {
+      closeModal();
+    }
+  });
+}
+
 // ------------------- INIT -------------------
 setupLanguage();
+setupModal();
 fetchCompanies();
